@@ -15,6 +15,9 @@ tables = html1_str.split("<table")
 # there should only be one set of rows to analyze now
 counter = 1
 
+# list that will store unicode, hex code, and name from HTML1
+list_of_tuples = []
+
 # analyze each table individually, starting at 1
 while counter < len(tables):
 
@@ -38,6 +41,9 @@ while counter < len(tables):
         sub_index = tables[counter].find("\"name\">", index, -1)
         end_of_name = tables[counter].find("</td>", sub_index, -1)
         name = tables[counter][sub_index+7:end_of_name]
+
+        # create a tuple with each bit of extracted data, then add to list for later
+        list_of_tuples.append((utf_code, hex_code, name))
 
         print(utf_code)
         print(hex_code)
