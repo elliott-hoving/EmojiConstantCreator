@@ -8,41 +8,47 @@ html2 = Path.open(Path.cwd() / 'HTML2.html', 'r', encoding='utf-8')
 html1_str = html1.read()
 html2_str = html2.read()
 
-index = 0
-counter = 0
+# tables[0] is the text before the first table
+tables = html1_str.split("<table")
 
-while counter < 3:
-    # find index of next occurrence of HTML row element
-    index = html1_str.find("<tr id=\"emoji", index, -1)
+# tables[1] is first table up until next table opening tag "<table....>"
+# there should only be one set of rows to analyze now
+counter = 1
 
-    # starting from index, find td element storing unicode, assign to variable
-    sub_index = html1_str.find("U+", index, -1)
-    utf_code = "U+" + html1_str[sub_index+2:sub_index+7]
+# analyze each table individually, starting at 1
+while counter < len(tables):
 
-    # starting from index, find first appearance of hex prefix "\x", copy hex code into variable
-    sub_index = html1_str.find("\\x", index, -1)
-    hex_code = html1_str[sub_index:sub_index+16]
+    # move this to examine each row <tr> element
+    # find index of first occurrence of <tr>, initialize
+    index = tables[counter].find("<tr id=\"emoji")
 
-    # starting from index, find first appearance of HTML class identifier for name, read until /td
-    # copy name into variable
-    sub_index = html1_str.find("\"name\">", index, -1)
-    end_of_name = html1_str.find("/td", sub_index, -1)
-    print("sub" + str(sub_index))
-    print("end" + str(end_of_name))
-    name = html1_str[sub_index+7:end_of_name-1]
+    # index returns -1 when there are no more <tr> elements in this table
+    while index != -1:
 
-    # TODO this does not work because there are multiple tables
-    # TODO add criteria for beginning of each table and end of each table
+        # starting from index, find td element storing unicode, assign to variable
+        sub_index = tables[counter].find("U+", index, -1)
+        utf_code = "U+" + tables[counter][sub_index+2:sub_index+7]
 
-    #print(index)
-    #print(utf_code)
-    #print(hex_code)
-    print(name)
+        # starting from index, find first appearance of hex prefix "\x", copy hex code into variable
+        sub_index = tables[counter].find("\\x", index, -1)
+        hex_code = tables[counter][sub_index:sub_index+16]
 
-    index = html1_str.find("/tr", index, -1)
+        # starting from index, find first appearance of HTML class identifier for name, read until /td
+        # copy name into variable
+        sub_index = tables[counter].find("\"name\">", index, -1)
+        end_of_name = tables[counter].find("</td>", sub_index, -1)
+        name = tables[counter][sub_index+7:end_of_name]
+
+        # TODO this does not work because there are multiple tables
+        # TODO add criteria for beginning of each table and end of each table
+
+        print(utf_code)
+        print(hex_code)
+        print(name)
+
+        index = tables[counter].find("<tr id=\"emoji", sub_index, -1)
+
     counter = counter + 1
-
-
 
 
 
