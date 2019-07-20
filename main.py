@@ -33,19 +33,17 @@ while counter < len(tables):
         sub_index = tables[counter].find("\\x", index, -1)
         hex_code = tables[counter][sub_index:sub_index+16]
 
-        # starting from index, find first appearance of HTML class identifier for name, read until /td
+        # starting from index, find first appearance of tag class identifier for name, read until /td
         # copy name into variable
         sub_index = tables[counter].find("\"name\">", index, -1)
         end_of_name = tables[counter].find("</td>", sub_index, -1)
         name = tables[counter][sub_index+7:end_of_name]
 
-        # TODO this does not work because there are multiple tables
-        # TODO add criteria for beginning of each table and end of each table
-
         print(utf_code)
         print(hex_code)
         print(name)
 
+        # set index to somewhere below most recent assignment, so that find() finds the next occurrence
         index = tables[counter].find("<tr id=\"emoji", sub_index, -1)
 
     counter = counter + 1
