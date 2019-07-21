@@ -38,7 +38,8 @@ for i in range(len(tables)):
 
         # starting from index, find first appearance of hex prefix "\x", copy hex code into variable
         sub_index = tables[i].find("\\x", index, -1)
-        hex_code = tables[i][sub_index:sub_index + 16]
+        end_of_hex = tables[i].find("<", sub_index, -1)
+        hex_code = tables[i][sub_index:end_of_hex]
 
         # starting from index, find first appearance of tag class identifier for name, read until /td
         # copy name into variable
